@@ -7,14 +7,17 @@ const bookingSchema = new mongoose.Schema(
     selectedDate: { type: String, require: true },
     selectedHour: { type: String, require: true },
     phoneNumber: { type: String, require: true },
-    //   status: false,
+    status: {
+      type: String,
+      required: true,
+      enum: ["pending", "declined", "accepted"],
+      default: "pending",
+    },
   },
   { timestamps: true }
 );
 
 module.exports = mongoose.model("appointment", bookingSchema);
-
-
 
 /* 
 

@@ -12,7 +12,7 @@ const getAppointments = async (req, res) => {
 //create new workout
 
 const createAppointment = async (req, res) => {
-  const { fullName, service, selectedDate, selectedHour, phoneNumber } =
+  const { fullName, service, selectedDate, selectedHour, phoneNumber, status } =
     req.body;
   // Or
   // const newWorkout = req.body;
@@ -27,6 +27,7 @@ const createAppointment = async (req, res) => {
       selectedDate,
       selectedHour,
       phoneNumber,
+      status,
     });
     //status 200 to say the request is success
     // json return the workout document ..
