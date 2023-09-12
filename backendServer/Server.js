@@ -16,8 +16,11 @@ require("dotenv").config();
 // import Routes
 // const bookingRoutes = require("./routes/bookings");
 const appointmentRoute = require("./routes/Appointments");
+const userRoute = require("./routes/userRoute");
+
 //Routes
 app.use("/api/appointments", appointmentRoute);
+app.use("/api/user", userRoute);
 
 // middlewear
 app.use((req, res, next) => {

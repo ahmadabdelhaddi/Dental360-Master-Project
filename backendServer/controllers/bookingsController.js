@@ -1,5 +1,5 @@
 // import model
-const Appointment = require("../models/bookingModel");
+const Appointment = require("../models/userModel");
 // import Mongoose
 const mongoose = require("mongoose");
 
@@ -13,26 +13,109 @@ const getAppointments = async (req, res) => {
 
 //create new Appointment
 
+// const createAppointment = async (req, res) => {
+//   const { fullName, service, selectedDate, selectedHour, phoneNumber, status } =
+//     req.body;
+//   // Or
+//   // const newWorkout = req.body;
+
+//   //add doc to db
+//   try {
+//     // workout object
+//     // create new document from workout constent
+//     const appointment = await Appointment.create({
+//       fullName,
+//       service,
+//       selectedDate,
+//       selectedHour,
+//       phoneNumber,
+//       status,
+//     });
+//     //status 200 to say the request is success
+//     // json return the workout document ..
+//     res.status(200).json(appointment);
+//   } catch (error) {
+//     res.status(400).json({ error: error.message });
+//   }
+// };
+
+// const createAppointment = async (req, res) => {
+//   const { fullName, service, selectedDate, selectedHour, phoneNumber, status } =
+//     req.body;
+
+//   try {
+//     // Create a new appointment
+//     const appointment = {
+//       fullName,
+//       service,
+//       selectedDate,
+//       selectedHour,
+//       phoneNumber,
+//       status,
+//     };
+
+//     // Find the user by _id
+//   const { id } = req.params;
+
+//     // const userId = req.user._id; // Assuming you have user information in the request
+//     const user = await User.findById(userId);
+
+//     if (!user) {
+//       return res.status(404).json({ error: "User not found" });
+//     }
+
+//     // Push the new appointment to the user's appointments array
+//     user.appointments.push(appointment);
+
+//     // Save the updated user document
+//     await user.save();
+
+//     // Respond with the newly created appointment
+//     res.status(200).json(appointment);
+//   } catch (error) {
+//     res.status(400).json({ error: error.message });
+//   }
+// };
+
 const createAppointment = async (req, res) => {
   const { fullName, service, selectedDate, selectedHour, phoneNumber, status } =
     req.body;
-  // Or
-  // const newWorkout = req.body;
 
-  //add doc to db
   try {
-    // workout object
-    // create new document from workout constent
-    const appointment = await Appointment.create({
+    // Create a new appointment
+    const appointment = {
       fullName,
       service,
       selectedDate,
       selectedHour,
       phoneNumber,
       status,
-    });
-    //status 200 to say the request is success
-    // json return the workout document ..
+    };
+
+    // Find the user by _id
+    const { id } = req.params;
+
+    // Assuming you have user information in the request, you can use it as follows:
+    // const userId = req.user._id;
+    // const user = await User.findById(userId);
+
+    // If you don't have user information in the request, you can directly associate the appointment with the user's ID:
+    // const userId = id; // User's ID is taken from the URL parameter
+
+    // Find the user by ID
+    const user = await Appointment.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Push the new appointment to the user's appointments array
+    user.appointments.push(appointment);
+
+    // Save the updated user document
+    await user.save();
+
+    // Respond with the newly created appointment
     res.status(200).json(appointment);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -92,7 +175,9 @@ const updateStatus = async (req, res) => {
 
   try {
     const updatedAppointment = await Appointment.findByIdAndUpdate(
-      id,{ status },{ new: true } // Return the updated document
+      id,
+      { status },
+      { new: true } // Return the updated document
     );
 
     if (!updatedAppointment) {
