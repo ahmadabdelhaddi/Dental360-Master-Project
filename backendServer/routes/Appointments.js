@@ -3,10 +3,18 @@ const router = express.Router();
 const {
   createAppointment,
   getAppointments,
+  getAppointment,
 } = require("../controllers/bookingsController");
+
+
+
 // Create a new booking
 router.post("/", createAppointment);
+
+// get all Appointments
 router.get("/", getAppointments);
-// Add more routes for reading, updating, and deleting bookings here...
+
+//get single Appointment
+router.get("/:id", getAppointment);
 
 module.exports = router;

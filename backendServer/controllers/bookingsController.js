@@ -1,7 +1,7 @@
 // import model
 const Appointment = require("../models/bookingModel");
 
-// get all workouts
+// get all Appointments
 const getAppointments = async (req, res) => {
   // Find method to get all data and sort it from newest to oldest
   const appointments = await Appointment.find({}).sort({ createdAt: -1 });
@@ -9,7 +9,7 @@ const getAppointments = async (req, res) => {
   res.status(200).json(appointments);
 };
 
-//create new workout
+//create new Appointment
 
 const createAppointment = async (req, res) => {
   const { fullName, service, selectedDate, selectedHour, phoneNumber, status } =
@@ -37,7 +37,25 @@ const createAppointment = async (req, res) => {
   }
 };
 
+//get a single Appointment
+const getAppointment = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ error: " The Id is " });
+  }
+
+  //   #################
+  const appointments = await Appointment.findById(id);
+  res.status(200).json(appointments);
+
+  if (!appointments) {
+    res.status(404).json({ error: " This Workout Not Found" });
+  }
+};
+
 module.exports = {
   createAppointment,
   getAppointments,
+  getAppointment,
 };
