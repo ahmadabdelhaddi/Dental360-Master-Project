@@ -6,8 +6,6 @@ const {
   getAppointment,
 } = require("../controllers/bookingsController");
 
-
-
 // Create a new booking
 router.post("/", createAppointment);
 

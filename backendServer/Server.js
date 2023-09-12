@@ -1,5 +1,7 @@
 //import express (npm i express)
 const express = require("express");
+// import Mongoose
+const mongoose = require("mongoose");
 
 //to make the app faster
 const app = express();
@@ -16,9 +18,6 @@ require("dotenv").config();
 const appointmentRoute = require("./routes/Appointments");
 //Routes
 app.use("/api/appointments", appointmentRoute);
-
-// import Mongoose
-const mongoose = require("mongoose");
 
 // middlewear
 app.use((req, res, next) => {

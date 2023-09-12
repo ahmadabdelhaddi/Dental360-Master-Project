@@ -1,5 +1,7 @@
 // import model
 const Appointment = require("../models/bookingModel");
+// import Mongoose
+const mongoose = require("mongoose");
 
 // get all Appointments
 const getAppointments = async (req, res) => {
@@ -42,15 +44,19 @@ const getAppointment = async (req, res) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ error: " The Id is " });
+    return res.status(404).json({ error: "Invalid ID" });
   }
 
-  //   #################
-  const appointments = await Appointment.findById(id);
-  res.status(200).json(appointments);
+  try {
+    const appointment = await Appointment.findById(id);
 
-  if (!appointments) {
-    res.status(404).json({ error: " This Workout Not Found" });
+    if (!appointment) {
+      return res.status(404).json({ error: "Appointment not found" });
+    }
+
+    res.status(200).json(appointment);
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
   }
 };
 
