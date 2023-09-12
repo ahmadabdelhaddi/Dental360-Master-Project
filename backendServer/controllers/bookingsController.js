@@ -4,6 +4,14 @@ const Appointment = require("../models/bookingModel");
 // import mongoose
 const mongoose = require("mongoose");
 
+// get all workouts
+const getAppointments = async (req, res) => {
+  // Find method to get all data and sort it from newest to oldest
+  const appointments = await appointment.find({}).sort({ createdAt: -1 });
+
+  res.status(200).json(appointments);
+};
+
 //create new workout
 
 const createAppointment = async (req, res) => {
@@ -33,4 +41,5 @@ const createAppointment = async (req, res) => {
 
 module.exports = {
   createAppointment,
+  getAppointments,
 };
