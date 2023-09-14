@@ -6,6 +6,10 @@ const mongoose = require("mongoose");
 //to make the app faster
 const app = express();
 
+//cors
+const cors = require("cors");
+app.use(cors());
+
 // middlewear
 // express.json() is a built in middleware function in Express, It parses incoming JSON requests and puts the parsed data in req.body.
 app.use(express.json());

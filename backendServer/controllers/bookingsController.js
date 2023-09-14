@@ -4,12 +4,12 @@ const Appointment = require("../models/userModel");
 const mongoose = require("mongoose");
 
 // get all Appointments
-const getAppointments = async (req, res) => {
-  // Find method to get all data and sort it from newest to oldest
-  const appointments = await Appointment.find({}).sort({ createdAt: -1 });
+// const getAppointments = async (req, res) => {
+//   // Find method to get all data and sort it from newest to oldest
+//   const appointments = await Appointment.find({}).sort({ createdAt: -1 });
 
-  res.status(200).json(appointments);
-};
+//   res.status(200).json(appointments);
+// };
 
 //create new Appointment
 
@@ -77,6 +77,16 @@ const getAppointments = async (req, res) => {
 //   }
 // };
 
+// get all Appointments
+const getAppointments = async (req, res) => {
+  // Find method to get all appointments and sort them from newest to oldest
+  const appointments = await Appointment.find({}, "-_id appointments").sort({
+    createdAt: -1,
+  });
+
+  res.status(200).json(appointments);
+};
+
 const createAppointment = async (req, res) => {
   const { fullName, service, selectedDate, selectedHour, phoneNumber, status } =
     req.body;
@@ -94,13 +104,6 @@ const createAppointment = async (req, res) => {
 
     // Find the user by _id
     const { id } = req.params;
-
-    // Assuming you have user information in the request, you can use it as follows:
-    // const userId = req.user._id;
-    // const user = await User.findById(userId);
-
-    // If you don't have user information in the request, you can directly associate the appointment with the user's ID:
-    // const userId = id; // User's ID is taken from the URL parameter
 
     // Find the user by ID
     const user = await Appointment.findById(id);
@@ -122,7 +125,28 @@ const createAppointment = async (req, res) => {
   }
 };
 
-//get a single Appointment
+//get a all Appointment of user
+// const getAppointment = async (req, res) => {
+//   const { id } = req.params;
+
+//   if (!mongoose.Types.ObjectId.isValid(id)) {
+//     return res.status(404).json({ error: "Invalid ID" });
+//   }
+
+//   try {
+//     const appointment = await Appointment.findById(id);
+
+//     if (!appointment) {
+//       return res.status(404).json({ error: "Appointment not found" });
+//     }
+
+//     res.status(200).json(appointment);
+//   } catch (error) {
+//     res.status(500).json({ error: "Server error" });
+//   }
+// };
+//get a all Appointment of user
+
 const getAppointment = async (req, res) => {
   const { id } = req.params;
 
@@ -131,13 +155,13 @@ const getAppointment = async (req, res) => {
   }
 
   try {
-    const appointment = await Appointment.findById(id);
+    const appointment = await Appointment.findById(id, "-_id appointments");
 
     if (!appointment) {
       return res.status(404).json({ error: "Appointment not found" });
     }
 
-    res.status(200).json(appointment);
+    res.status(200).json(appointment.appointments); // Return only the appointments field
   } catch (error) {
     res.status(500).json({ error: "Server error" });
   }
@@ -163,6 +187,88 @@ const getAppointment = async (req, res) => {
 //   //send data to mongoose
 //   res.status(200).json(workout);
 // };
+
+// get single appointments
+
+// const getSingleAppointment = async (req, res) => {
+//   const { id } = req.params;
+
+//   if (!mongoose.Types.ObjectId.isValid(id)) {
+//     return res.status(404).json({ error: "Invalid ID" });
+//   }
+
+//   try {
+//     const appointment = await Appointment.findById(id);
+
+//     if (!appointment) {
+//       return res.status(404).json({ error: "Appointment not found" });
+//     }
+
+//     res.status(200).json(appointment);
+//   } catch (error) {
+//     res.status(500).json({ error: "Server error" });
+//   }
+// };
+
+// const getSingleAppointment = async (req, res) => {
+//   const { id } = req.params;
+
+//   if (!mongoose.Types.ObjectId.isValid(id)) {
+//     return res.status(404).json({ error: "Invalid ID" });
+//   }
+
+//   try {
+//     const appointment = await Appointment.findById(id);
+
+//     if (!appointment) {
+//       return res.status(404).json({ error: "Appointment not found" });
+//     }
+
+//     res.status(200).json(appointment);
+//   } catch (error) {
+//     res.status(500).json({ error: "Server error" });
+//   }
+// };
+
+// const getSingleAppointment = async (req, res) => {
+//   const { id } = req.params;
+
+//   if (!mongoose.Types.ObjectId.isValid(id)) {
+//     return res.status(404).json({ error: "Invalid ID" });
+//   }
+
+//   try {
+//     const appointment = await Appointment.findById(id);
+
+//     if (!appointment) {
+//       return res.status(404).json({ error: "Appointment not found" });
+//     }
+
+//     res.status(200).json(appointment);
+//   } catch (error) {
+//     res.status(500).json({ error: "Server error" });
+//   }
+// };
+
+const getSingleAppointment = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ error: "Invalid ID" });
+  }
+
+  try {
+    const appointment = await Appointment.findOne({ _id: id });
+
+    if (!appointment) {
+      return res.status(404).json({ error: "Appointment not found" });
+    }
+
+    res.status(200).json(appointment);
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+};
 
 // Update appointment status by ID
 const updateStatus = async (req, res) => {
@@ -195,4 +301,5 @@ module.exports = {
   getAppointments,
   getAppointment,
   updateStatus,
+  getSingleAppointment,
 };

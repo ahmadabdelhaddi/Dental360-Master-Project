@@ -5,16 +5,20 @@ const {
   getAppointments,
   getAppointment,
   updateStatus,
+  getSingleAppointment,
 } = require("../controllers/bookingsController");
 
-// Create a new booking
+// Create a new Appointment
 router.post("/:id", createAppointment);
 
 // get all Appointments
 router.get("/", getAppointments);
 
-//get single Appointment
-router.get("/:id", getAppointment);
+//get all Appointment of  user
+router.get("/user/:id", getAppointment);
+
+//get all signle  Appointment
+router.get("/appointment/:id", getSingleAppointment);
 
 //update status
 router.patch("/:id", updateStatus);
