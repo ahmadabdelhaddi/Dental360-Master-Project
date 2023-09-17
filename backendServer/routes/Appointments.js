@@ -22,5 +22,5 @@ router.get("/appointment/:id", getSingleAppointment);
 
 //update status
 // router.patch("/:id", updateStatus);
-router.patch("/updateStatus/:userId/:appointmentId", updateStatus);
+router.patch("/updateStatus/:appointmentId", updateStatus);
 module.exports = router;

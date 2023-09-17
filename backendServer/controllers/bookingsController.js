@@ -4,80 +4,6 @@ const Appointment = require("../models/userModel");
 const mongoose = require("mongoose");
 
 // get all Appointments
-// const getAppointments = async (req, res) => {
-//   // Find method to get all data and sort it from newest to oldest
-//   const appointments = await Appointment.find({}).sort({ createdAt: -1 });
-
-//   res.status(200).json(appointments);
-// };
-
-//create new Appointment
-
-// const createAppointment = async (req, res) => {
-//   const { fullName, service, selectedDate, selectedHour, phoneNumber, status } =
-//     req.body;
-//   // Or
-//   // const newWorkout = req.body;
-
-//   //add doc to db
-//   try {
-//     // workout object
-//     // create new document from workout constent
-//     const appointment = await Appointment.create({
-//       fullName,
-//       service,
-//       selectedDate,
-//       selectedHour,
-//       phoneNumber,
-//       status,
-//     });
-//     //status 200 to say the request is success
-//     // json return the workout document ..
-//     res.status(200).json(appointment);
-//   } catch (error) {
-//     res.status(400).json({ error: error.message });
-//   }
-// };
-
-// const createAppointment = async (req, res) => {
-//   const { fullName, service, selectedDate, selectedHour, phoneNumber, status } =
-//     req.body;
-
-//   try {
-//     // Create a new appointment
-//     const appointment = {
-//       fullName,
-//       service,
-//       selectedDate,
-//       selectedHour,
-//       phoneNumber,
-//       status,
-//     };
-
-//     // Find the user by _id
-//   const { id } = req.params;
-
-//     // const userId = req.user._id; // Assuming you have user information in the request
-//     const user = await User.findById(userId);
-
-//     if (!user) {
-//       return res.status(404).json({ error: "User not found" });
-//     }
-
-//     // Push the new appointment to the user's appointments array
-//     user.appointments.push(appointment);
-
-//     // Save the updated user document
-//     await user.save();
-
-//     // Respond with the newly created appointment
-//     res.status(200).json(appointment);
-//   } catch (error) {
-//     res.status(400).json({ error: error.message });
-//   }
-// };
-
-// get all Appointments
 const getAppointments = async (req, res) => {
   // Find method to get all appointments and sort them from newest to oldest
   const appointments = await Appointment.find({}, "-_id appointments").sort({
@@ -168,98 +94,76 @@ const getSingleAppointment = async (req, res) => {
 };
 
 // const updateStatus = async (req, res) => {
-//   const { id } = req.params;
+//   const { appointmentId } = req.params;
+//   const {
+//     newStatus,
+//     fullName,
+//     service,
+//     selectedDate,
+//     selectedHour,
+//     phoneNumber,
+//   } = req.body;
+//   console.log(newStatus);
+//   console.log(fullName);
+//   console.log(service);
+//   console.log(selectedDate);
+//   console.log(selectedHour);
+//   console.log(phoneNumber);
 //   try {
-//     // Find the user by their ID and select the "appointments" field
-//     const appointment = await Appointment.findById(id, "appointments");
+//     // Find the appointment by its ID
+//     const appointment = await Appointment.findById({ _id: appointmentId });
+//     console.log(appointment);
+//     console.log(appointmentId);
 
 //     if (!appointment) {
-//       return res.status(404).json({ message: "appointment not found" });
-//     }
-
-//     const appointments = appointment.appointments || []; // Get the appointments or an empty array if none exist
-
-//     res.status(200).json(appointments);
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// };
-
-// const updateStatus = async (req, res) => {
-//   const { id } = req.params;
-//   const { newStatus } = req.body; // Get the new status from the request body
-
-//   try {
-//     // Find the user by their ID and select the "appointments" field
-//     const user = await Appointment.findById(id);
-
-//     if (!user) {
-//       return res.status(404).json({ message: "User not found" });
-//     }
-
-//     const appointments = user.appointments;
-
-//     // Find the appointment to update
-//     const appointmentToUpdate = appointments.find(
-//       (appointment) => appointment._id.toString() === req.params.appointmentId
-//     );
-
-//     if (!appointmentToUpdate) {
 //       return res.status(404).json({ message: "Appointment not found" });
 //     }
 
-//     // Check if the new status is valid (accepted or declined)
-//     if (newStatus !== "accepted" && newStatus !== "declined") {
-//       return res.status(400).json({ message: "Invalid status" });
-//     }
+//     // Update the status of the appointment and other details if needed
+//     appointment.status = newStatus;
+//     appointment.fullName = fullName;
+//     appointment.service = service;
+//     appointment.selectedDate = selectedDate;
+//     appointment.selectedHour = selectedHour;
+//     appointment.phoneNumber = phoneNumber;
 
-//     // Update the status of the appointment
-//     appointmentToUpdate.status = newStatus;
+//     // Save the updated appointment to the database
+//     await appointment.save();
 
-//     // Save the updated user document
-//     await user.save();
-
-//     res
-//       .status(200)
-//       .json({ message: "Appointment status updated successfully" });
+//     res.status(200).json({ message: "Appointment updated successfully" });
 //   } catch (error) {
 //     res.status(500).json({ error: error.message });
 //   }
 // };
+
+// Update appointment status
 const updateStatus = async (req, res) => {
-  const { userId, appointmentId } = req.params;
-  const { newStatus } = req.body;
-
   try {
-    // Find the user by their ID and select the "appointments" field
-    const user = await Appointment.findById(userId, "appointments");
+    const { appointmentId } = req.params;
+    const { status } = req.body; // Assuming you'll send the new status in the request body
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Find the appointment by its ID
-    const appointment = user.appointments.find(
-      (apt) => apt._id.toString() === appointmentId
+    // Find the user by appointmentId and update the status
+    const appointment = await Appointment.findOneAndUpdate(
+      { "appointments._id": appointmentId },
+      { $set: { "appointments.$.status": status } },
+      { new: true }
     );
 
     if (!appointment) {
-      return res.status(404).json({ message: "Appointment not found" });
+      return res.status(404).json({ message: "appointment not found" });
     }
-
-    // Update the status of the appointment
-    appointment.status = newStatus;
-
-    // Save the updated user object to the database
-    await user.save();
 
     res
       .status(200)
       .json({ message: "Appointment status updated successfully" });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Error updating status:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
+
+module.exports = { updateStatus };
+
 module.exports = {
   createAppointment,
   getAppointments,
