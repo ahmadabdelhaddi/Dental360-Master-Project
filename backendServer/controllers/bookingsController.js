@@ -125,26 +125,7 @@ const createAppointment = async (req, res) => {
   }
 };
 
-//get a all Appointment of user
-// const getAppointment = async (req, res) => {
-//   const { id } = req.params;
 
-//   if (!mongoose.Types.ObjectId.isValid(id)) {
-//     return res.status(404).json({ error: "Invalid ID" });
-//   }
-
-//   try {
-//     const appointment = await Appointment.findById(id);
-
-//     if (!appointment) {
-//       return res.status(404).json({ error: "Appointment not found" });
-//     }
-
-//     res.status(200).json(appointment);
-//   } catch (error) {
-//     res.status(500).json({ error: "Server error" });
-//   }
-// };
 //get a all Appointment of user
 
 const getAppointment = async (req, res) => {
@@ -167,88 +148,6 @@ const getAppointment = async (req, res) => {
   }
 };
 
-//update appointment
-// const updateWorkout = async (req, res) => {
-//   //get id
-//   const { id } = req.params;
-
-//   //check if valid or not
-//   if (!mongoose.Types.ObjectId.isValid(id)) {
-//     return res.status(404).json({ error: "This is Not Valid Id" });
-//   }
-
-//   const workout = await Workout.findOneAndUpdate({ _id: id }, { ...req.body });
-
-//   // if workout not found
-//   if (!workout) {
-//     return res.status(404).json({ error: "No such Workout " });
-//   }
-
-//   //send data to mongoose
-//   res.status(200).json(workout);
-// };
-
-// get single appointments
-
-// const getSingleAppointment = async (req, res) => {
-//   const { id } = req.params;
-
-//   if (!mongoose.Types.ObjectId.isValid(id)) {
-//     return res.status(404).json({ error: "Invalid ID" });
-//   }
-
-//   try {
-//     const appointment = await Appointment.findById(id);
-
-//     if (!appointment) {
-//       return res.status(404).json({ error: "Appointment not found" });
-//     }
-
-//     res.status(200).json(appointment);
-//   } catch (error) {
-//     res.status(500).json({ error: "Server error" });
-//   }
-// };
-
-// const getSingleAppointment = async (req, res) => {
-//   const { id } = req.params;
-
-//   if (!mongoose.Types.ObjectId.isValid(id)) {
-//     return res.status(404).json({ error: "Invalid ID" });
-//   }
-
-//   try {
-//     const appointment = await Appointment.findById(id);
-
-//     if (!appointment) {
-//       return res.status(404).json({ error: "Appointment not found" });
-//     }
-
-//     res.status(200).json(appointment);
-//   } catch (error) {
-//     res.status(500).json({ error: "Server error" });
-//   }
-// };
-
-// const getSingleAppointment = async (req, res) => {
-//   const { id } = req.params;
-
-//   if (!mongoose.Types.ObjectId.isValid(id)) {
-//     return res.status(404).json({ error: "Invalid ID" });
-//   }
-
-//   try {
-//     const appointment = await Appointment.findById(id);
-
-//     if (!appointment) {
-//       return res.status(404).json({ error: "Appointment not found" });
-//     }
-
-//     res.status(200).json(appointment);
-//   } catch (error) {
-//     res.status(500).json({ error: "Server error" });
-//   }
-// };
 
 const getSingleAppointment = async (req, res) => {
   const { id } = req.params;
@@ -270,31 +169,27 @@ const getSingleAppointment = async (req, res) => {
   }
 };
 
-// Update appointment status by ID
+
+
 const updateStatus = async (req, res) => {
   const { id } = req.params;
-  const { status } = req.body;
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ error: "Invalid ID" });
-  }
-
   try {
-    const updatedAppointment = await Appointment.findByIdAndUpdate(
-      id,
-      { status },
-      { new: true } // Return the updated document
-    );
+    // Find the user by their ID and select the "appointments" field
+    const appointment = await Appointment.findById(id, "appointments");
 
-    if (!updatedAppointment) {
-      return res.status(404).json({ error: "Appointment not found" });
+    if (!appointment) {
+      return res.status(404).json({ message: "appointment not found" });
     }
 
-    res.status(200).json(updatedAppointment);
+    const appointments = appointment.appointments || []; // Get the appointments or an empty array if none exist
+
+    res.status(200).json(appointments);
   } catch (error) {
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ error: error.message });
   }
 };
+
+
 
 module.exports = {
   createAppointment,
