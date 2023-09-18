@@ -18,6 +18,22 @@ const createAppointment = async (req, res) => {
     req.body;
 
   try {
+    // Find all users
+    const users = await Appointment.find({});
+    // Check if the selected date and time are already booked by any user
+    const isBooked = users.some((user) => {
+      return user.appointments.some((appointment) => {
+        return (
+          appointment.selectedDate === selectedDate &&
+          appointment.selectedHour === selectedHour
+        );
+      });
+    });
+
+    if (isBooked) {
+      return res.status(400).json({ error: "Appointment already booked" });
+    }
+
     // Create a new appointment
     const appointment = {
       fullName,
@@ -32,20 +48,20 @@ const createAppointment = async (req, res) => {
     const { id } = req.params;
 
     // Find the user by ID
-    const user = await Appointment.findById(id);
+    const userAppointment = await Appointment.findById(id);
 
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
+    if (!userAppointment) {
+      return res.status(404).json({ error: "Appointment not found" });
     }
 
     // Push the new appointment to the user's appointments array
-    user.appointments.push(appointment);
+    userAppointment.appointments.push(appointment);
 
     // Save the updated user document
-    await user.save();
+    await userAppointment.save();
 
-    // Respond with the newly created appointment
-    res.status(200).json(appointment);
+    // Respond with a success message or any other appropriate response
+    res.status(200).json({ message: "Appointments created successfully" });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

@@ -3,7 +3,6 @@ const bcrypt = require("bcrypt");
 const validator = require("validator");
 
 const Schema = mongoose.Schema;
-
 const userSchema = new Schema({
   email: {
     type: String,
@@ -21,17 +20,23 @@ const userSchema = new Schema({
   },
   appointments: [
     {
-      fullName: { type: String, require: true },
-      service: { type: String, require: true },
-      selectedDate: { type: String, require: true },
-      selectedHour: { type: String, require: true },
-      phoneNumber: { type: String, require: true },
+      fullName: { type: String, required: true },
+      service: { type: String, required: true },
+      selectedDate: { type: String, required: true },
+      selectedHour: { type: String, required: true },
+      phoneNumber: { type: String, required: true },
       status: {
         type: String,
         required: true,
         enum: ["pending", "declined", "accepted", "completed"],
         default: "pending",
       },
+    },
+  ],
+  bookedAppointments: [
+    {
+      date: { type: String, required: true },
+      time: { type: String, required: true },
     },
   ],
 });
@@ -41,7 +46,8 @@ userSchema.statics.signup = async function (
   email,
   password,
   role,
-  appointments
+  appointments,
+  bookedAppointments
 ) {
   // validation
   if (!email || !password) {
