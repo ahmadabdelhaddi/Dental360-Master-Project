@@ -33,12 +33,6 @@ const userSchema = new Schema({
       },
     },
   ],
-  bookedAppointments: [
-    {
-      date: { type: String, required: true },
-      time: { type: String, required: true },
-    },
-  ],
 });
 
 // static signup method
@@ -46,8 +40,7 @@ userSchema.statics.signup = async function (
   email,
   password,
   role,
-  appointments,
-  bookedAppointments
+  appointments
 ) {
   // validation
   if (!email || !password) {

@@ -13,6 +13,8 @@ const getAppointments = async (req, res) => {
   res.status(200).json(appointments);
 };
 
+//create new appointment and check if the selected date and time are already booked by any user
+
 const createAppointment = async (req, res) => {
   const { fullName, service, selectedDate, selectedHour, phoneNumber, status } =
     req.body;
